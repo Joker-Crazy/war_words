@@ -1,0 +1,7 @@
+lxml
+dateparser
+numpy
+matplotlib
+pandas
+nltk
+jupyter
