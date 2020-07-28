@@ -132,6 +132,8 @@ def collect_ukr_president_data(*args, **kwargs):
         elif content == 'HTTP Error 403: Forbidden':
             time.sleep(WAIT_FORBIDEN)
             continue
+        elif content == 'urllib.error.URLError':
+            continue
 
         tree = html.fromstring(content)
         header = tree.xpath(ARTICLE_HEADER)
