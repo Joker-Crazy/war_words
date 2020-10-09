@@ -132,14 +132,17 @@ def collect_ukr_president_data(*args, **kwargs):
         elif content == 'HTTP Error 403: Forbidden':
             time.sleep(WAIT_FORBIDEN)
             continue
+        elif content == 'urllib.error.URLError':
+            continue
+
 
         tree = html.fromstring(content)
         header = tree.xpath(ARTICLE_HEADER)
         date_value = tree.xpath(ARTICLE_DATE)
         content_value = tree.xpath(ARTICLE_CONTENT)
 
-        tmp['header'] = header[0].text
-        tmp['datetime'] = dateparser.parse(date_value[0].text).strftime('%Y-%m-%d %H:%M')
+        tmp['header'] = header[0].text if not header[0] else 'empty_header'
+        tmp['datetime'] = dateparser.parse(date_value[0].text).strftime('%Y-%m-%d %H:%M') if not date_value[0] else '28 июня 2000 года - 18:24'
         tmp['content'] = clear_text(*content_value)
         res_dict[item] = tmp
 
@@ -180,7 +183,7 @@ def collect_kremlin_data(*args, **kwargs):
 
         tree = html.fromstring(content)
         links_list = {item.attrib['href'] for item in tree.xpath(DOCUMENT_LINK_LOCATOR)}
-        if links_list.issubset(links) and len(links):
+        if links_list.issubset(links) and len(links) and year == 2000:
             break
         else:
             links = links.union(links_list)
