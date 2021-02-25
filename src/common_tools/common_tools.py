@@ -161,6 +161,7 @@ def collect_kremlin_data(*args, **kwargs):
 
     # Loop for collecting article links 
     readed_links = read_colected_data(KREMLIN_LINKS_PATH)
+    print("exists links: ", len(readed_links["http://kremlin.ru"]))
     links = set(readed_links[KREMLIN_BASE_URL]) if readed_links else set()
     flag = True
     while flag:
@@ -232,5 +233,95 @@ def collect_kremlin_data(*args, **kwargs):
 
     # Save articles content to json file like database
     write_collected_data(KREMLIN_CONTENT_PATH, **res_dict)
+    
+    return res_dict
+
+def collect_mfa_rf_data(*args, **kwargs):
+    ts = dt.now().timestamp()
+    get_date = ts
+
+    # Loop for collecting article links 
+    readed_links = read_colected_data(MFA_RF_LINKS_PATH)
+    links = set(readed_links['mfa_rf']) if readed_links else set()
+    last_page_number = int(
+        html.fromstring(get_content_by_link(MFA_RF_BASE_URL.format(page=1))).xpath(MFA_RF_LAST_PAGE_LOCATOR)[0].text
+    )
+    print(last_page_number)
+    flag = True
+    page = 1
+    while flag:
+        content = '' 
+        get_url = MFA_RF_BASE_URL.format(page=page)
+
+        print(get_url)
+
+        content = get_content_by_link(get_url)
+        if content == 'HTTP Error 404: Not Found':
+            break
+        elif content == 'HTTP Error 403: Forbidden':
+            time.sleep(WAIT_FORBIDEN)
+            continue
+
+        tree = html.fromstring(content)
+        links_list = {item.attrib['href'] for item in tree.xpath(MFA_RF_DOCUMENT_LINK_LOCATOR)}
+        if links_list.issubset(links):
+            break
+        else:
+            links = links.union(links_list)
+        time.sleep(WAIT_GET * 3)
+        page +=1
+        # flag = False
+
+    # Save article links to json file. Json file used as database
+    write_collected_data(
+        MFA_RF_LINKS_PATH,
+        **{'mfa_rf': list(links)}
+    )
+
+    # Loop for colecting article content
+    res_dict = read_colected_data(MFA_RF_CONTENT_PATH)
+    counter = 0
+    for item in links - res_dict.keys():
+        tmp = {}
+        get_url = item
+        print(get_url)
+
+        try:
+            content = get_content_by_link(get_url)
+        except ConnectionResetError:
+            continue
+
+        if content == 'HTTP Error 404: Not Found':
+            break
+        elif content == 'HTTP Error 403: Forbidden':
+            time.sleep(WAIT_FORBIDEN)
+            continue
+
+        tree = html.fromstring(content)
+        header = tree.xpath(MFA_RF_HEADER_LOCATOR)
+        date_value = tree.xpath(MFA_RF_DATE_LOCATOR)
+        time_value = tree.xpath(MFA_RF_TIME_LOCATOR)
+        content_note = tree.xpath(MFA_RF_DOC_NOTE_LOCATOR)
+        content_value = tree.xpath(MFA_RF_CONTENT_LOCATOR)
+        # print(date_value[0].text + ' ' + time_value[0].text + ':00')
+
+        _tm = ''.join(time_value[0].itertext()).replace(' ', '') if time_value else ''
+        _dt = dt.strptime(date_value[0].text.strip(), '%d.%m.%y').strftime('%Y-%m-%d') if date_value else '01 Yan 1900'
+        tmp['header'] = header[0].text if header else 'none'
+        tmp['datetime'] = dateparser.parse(_dt + ' ' + _tm).strftime('%Y-%m-%d %H:%M')
+        tmp['document note'] = content_note[0].text if content_note else 'none'
+        tmp['content'] = ' '.join(content_value[0].itertext()) if content_value else 'error page content'
+        res_dict[item] = tmp
+
+        time.sleep(WAIT_GET * 3)
+        # if counter < 99:
+        #     counter += 1
+        # else:
+        #     break
+
+    print(len(links))
+
+    # Save articles content to json file like database
+    write_collected_data(MFA_RF_CONTENT_PATH, **res_dict)
     
     return res_dict

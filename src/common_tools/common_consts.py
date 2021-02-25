@@ -53,3 +53,36 @@ CONTENT_LOCATOR = \
 # storages
 KREMLIN_LINKS_PATH = '/results/kremlin_links.json'
 KREMLIN_CONTENT_PATH = '/results/kremlin_data.json'
+
+#MFA RF
+MFA_RF_BASE_URL = 'https://www.mid.ru/ru/foreign_policy/news?' + \
+        'p_p_id=101_INSTANCE_cKNonkJE02Bw&' + \
+        'p_p_lifecycle=0&' + \
+        'p_p_state=normal&' + \
+        'p_p_mode=view&' + \
+        'p_p_col_id=column-1&' + \
+        'p_p_col_pos=1&' + \
+        'p_p_col_count=2&' + \
+        '_101_INSTANCE_cKNonkJE02Bw_delta=20&' + \
+        '_101_INSTANCE_cKNonkJE02Bw_keywords=&' + \
+        '_101_INSTANCE_cKNonkJE02Bw_advancedSearch=false&' + \
+        '_101_INSTANCE_cKNonkJE02Bw_andOperator=true&' + \
+        'p_r_p_564233524_resetCur=false&' + \
+        '_101_INSTANCE_cKNonkJE02Bw_cur={page}'
+MFA_RF_LAST_PAGE_LOCATOR = '//div[@class="paginates"]//li[@class="last"]/a'
+MFA_RF_DOCUMENT_LINK_LOCATOR = '//section[@class="page-block news-articles"]//ul/li/a[@class="anons-title"]'
+MFA_RF_HEADER_LOCATOR = '//div[@class="page-content"]//div[@class="portlet-column portlet-column-first"]//h1 | ' + \
+        '//div[@class="page-content"]//div[@class="portlet-column portlet-column-first"]//p[@class="anons-title"]'
+MFA_RF_DATE_LOCATOR = '//div[@class="page-content"]//div[@class="portlet-column portlet-column-first"]//div[contains(@class,"anons-status-line")]/i | ' + \
+        '//div[@class="page-content"]//div[@class="portlet-column portlet-column-first"]//div[contains(@class,"article-status-line")]/span/span'
+MFA_RF_TIME_LOCATOR = '//div[@class="page-content"]//div[@class="portlet-column portlet-column-first"]//div[@class="article-status-line"]/span/span/i'
+MFA_RF_DOC_NOTE_LOCATOR = '//div[@class="page-content"]//div[@class="portlet-column portlet-column-first"]//div[@class="article-note"]//span[@class="nowrap"] | ' + \
+        '//div[@class="page-content"]//div[@class="portlet-column portlet-column-first"]//div[contains(@class,"anons-status-line")]/b[@class="doc-number"]'
+# //div[@class="page-content"]//div[@class="portlet-column portlet-column-first"]//div[@class="text article-content" or @class="anons-text"]/p/span | //div[@class="text article-content" or @class="anons-text"]//p[@class="dxl-par"]/span[contains(@class,"dxl-run")] | 
+# MFA_RF_CONTENT_LOCATOR = '//div[@class="page-content"]//div[@class="portlet-column portlet-column-first"]//div[@class="text article-content" or @class="anons-text"]/p/span | ' + \
+#         '//div[@class="text article-content" or @class="anons-text"]//p[@class="dxl-par"]/span[contains(@class,"dxl-run")] | ' +\
+#         '//div[@class="text article-content" or @class="anons-text"]//p' 
+MFA_RF_CONTENT_LOCATOR = '//div[@class="page-content"]//div[@class="portlet-column portlet-column-first"]//div[@class="text article-content" or @class="anons-text"]'
+# storages
+MFA_RF_LINKS_PATH = '/results/mfa_rf_links.json'
+MFA_RF_CONTENT_PATH = '/results/mfa_rf_data.json'

@@ -2,7 +2,8 @@ import pandas as pd
 
 from common_tools.common_tools import (collect_ukranian_defenders_losses,
                                        collect_ukr_president_data,
-                                       collect_kremlin_data)
+                                       collect_kremlin_data,
+                                       collect_mfa_rf_data)
 
 
 if __name__ == '__main__':
@@ -15,3 +16,6 @@ if __name__ == '__main__':
 
     kremlin_data = pd.DataFrame.from_dict(collect_kremlin_data())
     print(kremlin_data)
+
+    mfa_rf_data = pd.DataFrame.from_dict(collect_mfa_rf_data())
+    print(mfa_rf_data)
